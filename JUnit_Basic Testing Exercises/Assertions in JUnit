@@ -1,0 +1,29 @@
+--Assertion Test:
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class AssertionTest {
+
+    @Test
+    void testAddition() {
+        assertEquals(30, 10 + 20);
+    }
+
+    @Test
+    void testPositive() {
+        assertTrue(10 > 0);
+    }
+
+    @Test
+    void testNull() {
+        String s = null;
+        assertNull(s);
+    }
+}
+
+--testing class:
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+}
