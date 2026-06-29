@@ -1,0 +1,76 @@
+--User class
+
+ public class User {
+
+    private int id;
+    private String name;
+
+    public User(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+--UserRepository class
+
+public interface UserRepository {
+
+    User findUser(int id);
+
+}
+
+--userService class
+
+public class UserService {
+
+    private UserRepository repository;
+
+    public UserService(UserRepository repository) {
+        this.repository = repository;
+    }
+
+    public String getUserName(int id) {
+
+        User user = repository.findUser(id);
+
+        return user.getName();
+    }
+}
+
+--UserServiceTest class
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UserServiceTest {
+
+    @Test
+    void testGetUserName() {
+
+        // Mock
+        UserRepository repository = Mockito.mock(UserRepository.class);
+
+        // Stub
+        Mockito.when(repository.findUser(1))
+                .thenReturn(new User(1, "Raj"));
+
+        // Inject Mock
+        UserService service = new UserService(repository);
+
+        // Call Method
+        String name = service.getUserName(1);
+
+        // Verify
+        assertEquals("Raj", name);
+    }
+}
