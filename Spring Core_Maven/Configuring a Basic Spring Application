@@ -1,0 +1,70 @@
+--Student class
+
+package org.example;
+
+
+public class Student {
+
+    private String name;
+
+    public Student() {
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void display() {
+        System.out.println("Student Name : " + name);
+    }
+}
+
+--App class
+
+package org.example;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class App {
+
+    public static void main(String[] args) {
+
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("applicationContext.xml");
+
+        Student student = (Student) context.getBean("student");
+
+        student.display();
+    }
+}
+
+--applicationContext (XML file)
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="student" class="org.example.Student">
+
+        <property name="name" value="Jyothirmai"/>
+
+    </bean>
+
+</beans>
+
+--pom xml file
+ <dependencies>
+
+        <!-- Spring Context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.1.8</version>
+        </dependency>
+
+    </dependencies>
