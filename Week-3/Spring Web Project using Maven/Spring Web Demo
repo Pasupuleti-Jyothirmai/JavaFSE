@@ -1,0 +1,48 @@
+// Home Controller Class
+package org.cognizant.springwebdemo.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HomeController {
+
+    @GetMapping("/")
+    public String home() {
+        return "Welcome to Spring Boot!";
+    }
+}
+
+//Spring Web Demo Application
+package org.cognizant.springwebdemo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SpringWebDemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringWebDemoApplication.class, args);
+    }
+
+}
+
+//application properties
+spring.application.name=spring-web-demo
+server.port=8081
+
+//Spring web Demo Applications Tests
+package org.cognizant.springwebdemo;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class SpringWebDemoApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}
