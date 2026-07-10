@@ -1,0 +1,297 @@
+//SecurityConfig
+package org.example.jwthandson.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/authenticate").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .httpBasic(Customizer.withDefaults());
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+
+//AuthenticationController
+package org.example.jwthandson.controller;
+
+import org.example.jwthandson.model.AuthenticationRequest;
+import org.example.jwthandson.model.AuthenticationResponse;
+import org.example.jwthandson.util.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+public class AuthenticationController {
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @PostMapping("/authenticate")
+    public AuthenticationResponse authenticate(
+            @RequestBody AuthenticationRequest request) {
+
+        if ("admin".equals(request.getUsername())
+                && "admin123".equals(request.getPassword())) {
+
+            String token = jwtUtil.generateToken(request.getUsername());
+
+            return new AuthenticationResponse(token);
+        }
+
+        throw new RuntimeException("Invalid Username or Password");
+    }
+}
+
+//AuthenticationRequest
+package org.example.jwthandson.model;
+
+public class AuthenticationRequest {
+
+    private String username;
+    private String password;
+
+    public AuthenticationRequest() {
+    }
+
+    public AuthenticationRequest(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}
+
+//AuthenticationResponse
+package org.example.jwthandson.model;
+
+public class AuthenticationResponse {
+
+    private String jwt;
+
+    public AuthenticationResponse() {
+    }
+
+    public AuthenticationResponse(String jwt) {
+        this.jwt = jwt;
+    }
+
+    public String getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
+    }
+}
+
+//MyUserDetailsService
+package org.example.jwthandson.service;
+
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+
+@Service
+public class MyUserDetailsService implements UserDetailsService {
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+
+        return new User(
+                "admin",
+                "{noop}admin123",
+                Collections.emptyList()
+        );
+    }
+}
+
+//JwtUtil
+package org.example.jwthandson.util;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
+
+@Component
+public class JwtUtil {
+
+    private static final String SECRET =
+            "mysecretkeymysecretkeymysecretkey12";
+
+    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
+
+    public String generateToken(String username) {
+
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+}
+
+//JwtHandsonApplication
+package org.example.jwthandson;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class JwtHandsonApplication {
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(JwtHandsonApplication.class, args);
+    }
+
+}
+
+//application.properties
+spring.application.name=jwt-handson
+server.port=8081
+
+//JwtHandsonApplicationTests
+package org.example.jwthandson;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class JwtHandsonApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}
+
+
+//pom.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.0</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>org.example</groupId>
+    <artifactId>jwt-handson</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>jwt-handson</name>
+    <description>jwt-handson</description>
+    <url/>
+    <licenses>
+        <license/>
+    </licenses>
+    <developers>
+        <developer/>
+    </developers>
+    <scm>
+        <connection/>
+        <developerConnection/>
+        <tag/>
+        <url/>
+    </scm>
+    <properties>
+        <java.version>21</java.version>
+    </properties>
+    <dependencies>
+
+        <!-- Spring Web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
