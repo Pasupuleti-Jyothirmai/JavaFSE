@@ -1,0 +1,133 @@
+//Country
+package org.example.countryrest;
+
+public class Country {
+
+    private String code;
+    private String name;
+
+    public Country() {
+    }
+
+    public Country(String code, String name) {
+        this.code = code;
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+//CountryController
+package org.example.countryrest;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class CountryController {
+
+    @GetMapping("/country")
+    public Country getCountry() {
+
+        return new Country("IN", "India");
+
+    }
+}
+//ContryRestApplication
+package org.example.countryrest;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class CountryRestApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(CountryRestApplication.class, args);
+    }
+}
+//application.properties
+spring.application.name=country-rest
+server.port=8081
+//contryRestApplicationTests
+package org.example.countryrest;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class CountryRestApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}
+//pom.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.0</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>org.example</groupId>
+    <artifactId>country-rest</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>country-rest</name>
+    <description>country-rest</description>
+    <url/>
+    <licenses>
+        <license/>
+    </licenses>
+    <developers>
+        <developer/>
+    </developers>
+    <scm>
+        <connection/>
+        <developerConnection/>
+        <tag/>
+        <url/>
+    </scm>
+    <properties>
+        <java.version>21</java.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
