@@ -1,0 +1,101 @@
+//org.example.account.controller;
+//AccountController
+package org.example.account.controller;
+
+
+import org.example.account.model.Account;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class AccountController {
+
+    @GetMapping("/account")
+    public Account getAccount() {
+
+        return new Account(
+                1001,
+                "Jyothirmai",
+                50000
+        );
+    }
+}
+
+//org.example.account.model;
+//Account
+
+package org.example.account.model;
+
+public class Account {
+
+    private int accountNumber;
+    private String accountHolder;
+    private double balance;
+
+    public Account() {
+    }
+
+    public Account(int accountNumber, String accountHolder, double balance) {
+        this.accountNumber = accountNumber;
+        this.accountHolder = accountHolder;
+        this.balance = balance;
+    }
+
+    public int getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(int accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public String getAccountHolder() {
+        return accountHolder;
+    }
+
+    public void setAccountHolder(String accountHolder) {
+        this.accountHolder = accountHolder;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+}
+
+
+//org.example.account;
+//AccountServiceApplication class
+package org.example.account;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class AccountServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(AccountServiceApplication.class, args);
+    }
+
+}
+
+
+//org.example.account
+//AccountServiceApplicationTests class
+package org.example.account;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class AccountServiceApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}
